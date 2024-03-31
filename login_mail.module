@@ -1,0 +1,17 @@
+<?php
+
+use Drupal\login_mail\Event\UserLoginEvent;
+
+function login_mail_user_login($account) {
+  $event = new UserLoginEvent($account);
+  $eventDispatcher = \Drupal::service('event_dispatcher');
+  $eventDispatcher->dispatch($event, UserLoginEvent::EVENT_NAME);
+}
+
+
+function login_mail_mail($key, &$message, $params) {
+  if($key === "user_login"){
+    $message['subject'] = isset($params['title']) ? $params['title'] : 'デフォルトの件名';
+    $message['body'][] = isset($params['message']) ? $params['message'] : '';
+  }
+}
